@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from flask import Flask, g, render_template, request, session, flash, redirect, url_for, abort, jsonify
 
 # configuration
@@ -104,4 +105,5 @@ def delete_entry(post_id):
 
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))  # fallback to 5000 locally
+    app.run(host="0.0.0.0", port=port)

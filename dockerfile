@@ -1,21 +1,23 @@
 # syntax=docker/dockerfile:1
 FROM python:3.12-slim
 
+# Set working directory to /app
 WORKDIR /app
 
-# (optional) system deps
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
+# Copy and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app
+# Copy everything into the container
 COPY . .
 
-# Optional hint for local dev; Render will inject PORT at runtime
-EXPOSE 8000
+# Move into the actual app folder so Python can see `project/`
+WORKDIR /app/flaskr-tdd
+ENV PYTHONPATH=/app/flaskr-tdd
 
-# Use shell form so $PORT is expanded; default to 8000 if not set
+# Run with gunicorn; expand $PORT at runtime
 CMD ["sh", "-c", "gunicorn project.app:app --bind 0.0.0.0:${PORT:-8000}"]

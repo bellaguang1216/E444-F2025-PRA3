@@ -79,6 +79,15 @@ def test_messages(client):
 
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
-    rv = client.get("/delete/1")
+    # First, login
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    # Add a message
+    client.post(
+        "/add",
+        data=dict(title="Test Post", text="Test content"),
+        follow_redirects=True,
+    )
+    # Now delete it
+    rv = client.post("/delete/1")
     data = json.loads(rv.data)
     assert data["status"] == 1

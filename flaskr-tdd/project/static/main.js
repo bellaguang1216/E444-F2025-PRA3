@@ -8,7 +8,9 @@
     postElements[i].addEventListener("click", function () {
       const postId = this.getElementsByTagName("h2")[0].getAttribute("id");
       const node = this;
-      fetch(`/delete/${postId}`)
+      fetch(`/delete/${postId}`, {
+        method: 'POST'
+      })
         .then(function (resp) {
           return resp.json();
         })
